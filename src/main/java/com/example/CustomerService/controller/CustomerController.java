@@ -6,6 +6,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+
+
 @RestController
 public class CustomerController {
 
@@ -16,36 +21,35 @@ public class CustomerController {
     }
 
 
-    @GetMapping("/test1")
-    public void function1(){
-        System.out.println("niyati dubey");
-    }
-
-    @PostMapping("/test2")
-    public void function2(){
-        System.out.println("hello world");
-    }
-
-    @PostMapping("/test3")
-    public void function3(@RequestBody Credentials credential){
-       this.loginService.login(credential);
-    }
 
 
-    @GetMapping("/test4/{name}")
-    public Credentials function4(@PathVariable("name") String name){
+//    @PostMapping("/login")
+//    public void function3(@RequestBody Credentials credential){
+//       this.loginService.login(credential);
+//    }
+//
+
+    @Operation(summary = "Display customer details", description = "Get customer details by name : ")
+    @GetMapping("/loginName/{name}")
+    public Credentials showUserName(@PathVariable("name") String name){
         return this.loginService.getUserDetails_name(name);
        // System.out.println("hello user "+name);
     }
 
-    @PostMapping("/test5")
-    public ResponseEntity function5(@RequestBody Credentials credential){
-        this.loginService.login(credential);
+    @Operation(summary = "Login customer", description = "Authenticate customer with provided credentials")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "customer logged in successfully"),
+            @ApiResponse(responseCode = "400", description = "Not found! Try Again")
+    })
+    @PostMapping("/login")
+    public ResponseEntity login(@RequestBody Credentials credential){
+       this.loginService.login(credential);
         return new ResponseEntity<String>("user created successfully", HttpStatus.CREATED);
     }
 
-    @GetMapping("/test6/{password}")
-    public Credentials function6(@PathVariable("password") String password){
+    @Operation(summary = "Display customer details", description = "Get customer details by password: ")
+    @GetMapping("/loginPassword/{password}")
+    public Credentials showUserPassword(@PathVariable("password") String password){
         return this.loginService.getUserDetails_password(password);
         // System.out.println("hello user "+name);
     }
