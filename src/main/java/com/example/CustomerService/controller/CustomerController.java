@@ -1,7 +1,12 @@
 package com.example.CustomerService.controller;
 
+import com.example.CustomerService.exception.CustomerNotFoundException;
+import com.example.CustomerService.exception.PasswordNotFoundEcxeption;
 import com.example.CustomerService.model.Credentials;
 import com.example.CustomerService.services.CustomerLoginService;
+import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,7 +15,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
-
+@Slf4j
 @RestController
 public class CustomerController {
 
@@ -31,7 +36,7 @@ public class CustomerController {
 
     @Operation(summary = "Display customer details", description = "Get customer details by name : ")
     @GetMapping("/loginName/{name}")
-    public Credentials showUserName(@PathVariable("name") String name){
+    public Credentials showUserName(@PathVariable("name") String name) throws CustomerNotFoundException {
         return this.loginService.getUserDetails_name(name);
        // System.out.println("hello user "+name);
     }
@@ -42,17 +47,21 @@ public class CustomerController {
             @ApiResponse(responseCode = "400", description = "Not found! Try Again")
     })
     @PostMapping("/login")
-    public ResponseEntity login(@RequestBody Credentials credential){
+    public ResponseEntity login(@Valid @RequestBody Credentials credential){
        this.loginService.login(credential);
-        return new ResponseEntity<String>("user created successfully", HttpStatus.CREATED);
+        return new ResponseEntity<String>("user created successfully", HttpStatus.ACCEPTED);
     }
 
     @Operation(summary = "Display customer details", description = "Get customer details by password: ")
     @GetMapping("/loginPassword/{password}")
-    public Credentials showUserPassword(@PathVariable("password") String password){
+    public Credentials showUserPassword(@PathVariable("password") String password) throws PasswordNotFoundEcxeption {
+
+
         return this.loginService.getUserDetails_password(password);
         // System.out.println("hello user "+name);
     }
 
+//    @DeleteMapping("/deleteEntry/{name}")
+//    public void deleteCredential()
 
 }
