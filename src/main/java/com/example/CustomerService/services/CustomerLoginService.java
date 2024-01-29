@@ -5,7 +5,9 @@ import com.example.CustomerService.exception.PasswordNotFoundEcxeption;
 import com.example.CustomerService.model.Credentials;
 import com.example.CustomerService.repository.CustomerCredetialsRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+
 
 @Slf4j
 @Service
@@ -27,7 +29,7 @@ public class CustomerLoginService {
 
     public Credentials getUserDetails_name(String name) throws CustomerNotFoundException {
         CustomerCredentials userCredentials = credetialsRepository.findByUsername(name);
-        if(name!=null && !name.isEmpty()){
+        if(!StringUtils.isBlank(name)){
             if(userCredentials!=null){
                 return Credentials.builder().username(userCredentials.getUsername())
                         .password(userCredentials.getPassword()).build();
@@ -48,7 +50,7 @@ else{
 
     public Credentials getUserDetails_password(String password) throws PasswordNotFoundEcxeption {
         CustomerCredentials userCredentials = credetialsRepository.findByPassword(password);
-       if(password==null){
+       if(StringUtils.isBlank(password)){
            return Credentials.builder().username("not found")
                    .password("not found").build();
        }
@@ -65,9 +67,9 @@ else{
            }
        }
 
-
-
     }
+
+
 
 
 }

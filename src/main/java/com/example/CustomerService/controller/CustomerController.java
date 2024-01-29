@@ -6,7 +6,6 @@ import com.example.CustomerService.model.Credentials;
 import com.example.CustomerService.services.CustomerLoginService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,19 +25,11 @@ public class CustomerController {
     }
 
 
-
-
-//    @PostMapping("/login")
-//    public void function3(@RequestBody Credentials credential){
-//       this.loginService.login(credential);
-//    }
-//
-
     @Operation(summary = "Display customer details", description = "Get customer details by name : ")
     @GetMapping("/loginName/{name}")
     public Credentials showUserName(@PathVariable("name") String name) throws CustomerNotFoundException {
         return this.loginService.getUserDetails_name(name);
-       // System.out.println("hello user "+name);
+
     }
 
     @Operation(summary = "Login customer", description = "Authenticate customer with provided credentials")
@@ -56,12 +47,10 @@ public class CustomerController {
     @GetMapping("/loginPassword/{password}")
     public Credentials showUserPassword(@PathVariable("password") String password) throws PasswordNotFoundEcxeption {
 
-
         return this.loginService.getUserDetails_password(password);
-        // System.out.println("hello user "+name);
+
     }
 
-//    @DeleteMapping("/deleteEntry/{name}")
-//    public void deleteCredential()
+
 
 }
