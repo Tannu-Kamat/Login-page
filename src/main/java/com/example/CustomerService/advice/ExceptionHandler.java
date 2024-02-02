@@ -1,10 +1,10 @@
 package com.example.CustomerService.advice;
-
 import com.example.CustomerService.exception.CustomerNotFoundException;
 import com.example.CustomerService.exception.PasswordNotFoundEcxeption;
 import com.example.CustomerService.model.ResponseDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -24,15 +24,15 @@ public class ExceptionHandler {
         message=ex.getBindingResult().getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage)
                 .collect(Collectors.joining());
         response.setMessage(message);
-        log.info(message);
+        log.error(message);
         return new ResponseEntity<>(response,HttpStatus.BAD_REQUEST);
     }
 
 
     @org.springframework.web.bind.annotation.ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<String> handleInvalidInput(HttpMessageNotReadableException e) {
-        log.info("Invalid request payload.");
-        return ResponseEntity.badRequest().body("Invalid request payload.");
+        log.error("Invalid request payload.Try again with valid credentials");
+        return ResponseEntity.badRequest().body("Invalid request payload.Try again with valid credentials");
     }
 
 
@@ -50,10 +50,13 @@ public class ExceptionHandler {
         response.setMessage(ex.getMessage());
         return new ResponseEntity<>(response,HttpStatus.NOT_FOUND);
 
-
-
     }
 
+@org.springframework.web.bind.annotation.ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ResponseDTO> handleDataIntegrityViolationException(DataIntegrityViolationException ex){
+        response.setMessage("already exist ! try with something else");
+        return new ResponseEntity<>(response,HttpStatus.CONFLICT);
 
+}
 
 }

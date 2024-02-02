@@ -23,7 +23,6 @@ public class CustomerLoginService {
         CustomerCredentials userCredentials= CustomerCredentials.builder().username(credentials.getUsername())
                         .password(credentials.getPassword()).build();
         credetialsRepository.save(userCredentials);
-        System.out.println("user loggin in "+credentials.getUsername());
         log.info("user logged in is {}",credentials.getUsername());
     }
 
@@ -31,6 +30,7 @@ public class CustomerLoginService {
         CustomerCredentials userCredentials = credetialsRepository.findByUsername(name);
         if(!StringUtils.isBlank(name)){
             if(userCredentials!=null){
+                log.info("user logged in is : {}",userCredentials.getUsername());
                 return Credentials.builder().username(userCredentials.getUsername())
                         .password(userCredentials.getPassword()).build();
             }
@@ -57,6 +57,7 @@ else{
 
        else{
            if(userCredentials!=null){
+               log.info("user logged in is : {} with given password",userCredentials.getUsername());
                return Credentials.builder().username(userCredentials.getUsername())
                        .password(userCredentials.getPassword()).build();
            }

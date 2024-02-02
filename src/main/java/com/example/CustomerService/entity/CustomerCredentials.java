@@ -10,11 +10,15 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.UniqueElements;
 
+import java.util.List;
+import java.util.Set;
+
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Table(uniqueConstraints={@UniqueConstraint(columnNames={"username"})})
 public class CustomerCredentials {
 
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -24,5 +28,10 @@ public class CustomerCredentials {
     @Column(unique = true)
     private String username;
 
+    @Column(nullable = false)
     private String password;
+
+    @OneToMany(targetEntity = ContactDetails.class, cascade = CascadeType.ALL)
+    @JoinColumn(name = "username", referencedColumnName = "username")
+    private List<ContactDetails> CustomerContactDetails;
 }
