@@ -1,0 +1,32 @@
+.container {
+    max-width: 500px;
+}
+
+.login-details {
+    color: lightslategray;
+    text-align: center;
+}
+
+
+.form-container {
+    padding: 20px;
+}
+
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+
+.form-control {
+  width: 100%;
+}
+
+
+.error-message {
+  color: red;
+  font-size: 0.8em;
+}
+
+
+

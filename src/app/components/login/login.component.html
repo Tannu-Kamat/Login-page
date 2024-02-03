@@ -1,40 +1,48 @@
-<div class="container vh-100" style="max-width: 400px;"> 
+<!-- Container and Layout -->
+<div class="container vh-100">
     <div class="row justify-content-center h-100">
-        <div class="card my-auto shadow">
-            <div class="card-body px-5">
-                <div class="text-center">
-                    
-                </div>
-                <div class="text-center">
-                    <h2>Welcome</h2>
-                </div>
-                <p style="color: lightslategray; text-align: center;">
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Please enter your login
-                    details&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
-                    
-                <style>
-                    .form-group {
-                        margin-bottom: 20px;
-                    }
-                
-                    .form-control {
-                        width: 100%; 
-                    }
-                </style>
-                
-                <form style="padding: 20px;">
-                    <div class="form-group">
-                        <input type="email" id="email" placeholder="Email" class="form-control" formControlName="email" name="email" />
-                    </div>
-                    <div class="form-group">
-                        <input type="password" id="password" placeholder="Password" class="form-control" formControlName="password" name="password" />
-                    </div>
-                    <input type="submit" class="btn btn-primary w-100" value="Login" name="">
-                </form>
+      <!-- Card Structure -->
+      <div class="card my-auto shadow">
+        <div class="card-body px-5">
+          <!-- Header  -->
+          <div class="text-center">
+            <h2>Welcome</h2>
+          </div>
+          <p class="login-details"> Enter your login details </p>
+
+
+          <!-- Form Section -->
+          <form [formGroup]="loginForm" class="form-container">
+
+            <div class="form-group">
+              
+                <input type="text" id="username" placeholder="Username" class="form-control" formControlName="username" name="username" />
+                <div *ngIf="USR.errors?.['required'] && (USR.dirty || USR.touched)" class="error-message">
+                Username is required</div>
+
             </div>
-            <div class="card-footer text-right">
-                <small><a routerLink="../forgot-password">Forgot Password</a></small>
+  
+            <div class="form-group">
+
+               <input type="password" id="password" placeholder="Password" class="form-control" formControlName="password" name="password" />
+               <div *ngIf="PWD.errors?.['required'] && (PWD.dirty || PWD.touched)" class="error-message">
+                Password is required </div>
+              
+                <div *ngIf="(PWD.errors?.['minlength'] || PWD.errors?.['maxlength']) && (PWD.dirty || PWD.touched)" class="error-message">
+                Password should be at least 6 characters long
+                </div>
+
             </div>
+
+            <input type="submit" (click)="loginmethod()" class="btn btn-primary w-100" value="Login" name="">
+
+          </form>
         </div>
+        <!-- Footer -->
+        <div class="card-footer text-right">
+          <small><a routerLink="../forgot-password">Forgot Password</a></small>
+        </div>
+      </div>
     </div>
-</div>
+  </div>
+  
