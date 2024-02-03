@@ -32,15 +32,6 @@ export class LoginComponent implements OnInit {
   ngOnInit(): void { }
 
 
-  /*login() {
-    this.credentials.username = this.loginForm.get('username')?.value;
-    this.credentials.password = this.loginForm.get('password')?.value;
-
-  }*/
-
-
-
-
   get USR(): FormControl {
     return this.loginForm.get('username') as FormControl;
   }
