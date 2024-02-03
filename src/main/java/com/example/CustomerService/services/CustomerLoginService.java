@@ -28,7 +28,7 @@ public class CustomerLoginService {
 
     public Credentials getUserDetails_name(String name) throws CustomerNotFoundException {
         CustomerCredentials userCredentials = credetialsRepository.findByUsername(name);
-        if(!StringUtils.isBlank(name)){
+
             if(userCredentials!=null){
                 log.info("user logged in is : {}",userCredentials.getUsername());
                 return Credentials.builder().username(userCredentials.getUsername())
@@ -39,23 +39,13 @@ public class CustomerLoginService {
                 throw new CustomerNotFoundException(name+" not found in database");
             }
 
-        }
-else{
-            return Credentials.builder().username("not found")
-                    .password("not found").build();
-        }
 
 
     }
 
     public Credentials getUserDetails_password(String password) throws PasswordNotFoundEcxeption {
         CustomerCredentials userCredentials = credetialsRepository.findByPassword(password);
-       if(StringUtils.isBlank(password)){
-           return Credentials.builder().username("not found")
-                   .password("not found").build();
-       }
 
-       else{
            if(userCredentials!=null){
                log.info("user logged in is : {} with given password",userCredentials.getUsername());
                return Credentials.builder().username(userCredentials.getUsername())
@@ -66,7 +56,7 @@ else{
                throw new PasswordNotFoundEcxeption("customer not found in database with given password");
 
            }
-       }
+
 
     }
 

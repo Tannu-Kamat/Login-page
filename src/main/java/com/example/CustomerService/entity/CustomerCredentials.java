@@ -32,6 +32,6 @@ public class CustomerCredentials {
     private String password;
 
     @OneToMany(targetEntity = ContactDetails.class, cascade = CascadeType.ALL)
-    @JoinColumn(name = "username", referencedColumnName = "username")
+    @JoinColumn(name = "id", referencedColumnName = "id")
     private List<ContactDetails> CustomerContactDetails;
 }

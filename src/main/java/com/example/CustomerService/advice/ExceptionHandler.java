@@ -30,9 +30,10 @@ public class ExceptionHandler {
 
 
     @org.springframework.web.bind.annotation.ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<String> handleInvalidInput(HttpMessageNotReadableException e) {
+    public ResponseEntity<ResponseDTO> handleInvalidInput(HttpMessageNotReadableException e) {
+        response.setMessage("Try again with valid credentials");
         log.error("Invalid request payload.Try again with valid credentials");
-        return ResponseEntity.badRequest().body("Invalid request payload.Try again with valid credentials");
+        return new ResponseEntity<>(response,HttpStatus.BAD_REQUEST);
     }
 
 
