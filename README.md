@@ -1,6 +1,63 @@
+
 <<<<<<< HEAD
 # Login-page
-=======
+
+![Screenshot from 2024-02-05 13-28-10](https://github.com/Tannu-Kamat/Login-page/assets/110116827/c6bdeb7b-b5dd-454d-9cdd-f6d635c68479)
+
+# forgot-password-page
+
+![Screenshot from 2024-02-05 13-28-37](https://github.com/Tannu-Kamat/Login-page/assets/110116827/0ba8f02e-b2d3-4d2a-9ee9-4ab092040f42)
+
+# page-not-found
+
+![Screenshot from 2024-02-05 13-29-11](https://github.com/Tannu-Kamat/Login-page/assets/110116827/20b09ddc-fa90-40a3-84d9-924e8fdd378e)
+
+
+---
+
+
+
+___
+___
+
+# Use of ng-bootstrap
+
+ng-bootstrap is a popular open-source UI component library for Angular. It simplifies the process of building beautiful and functional web applications by providing a rich set of pre-built components.
+
+Getting Started
+
+1. Install Bootstrap :-
+```
+npm install bootstrap
+```
+---
+2. Update angular.json:-
+Open your angular.json file and add the path to Bootstrap's CSS file in the "styles" array.
+
+``` js
+"styles": [
+  "node_modules/bootstrap/dist/css/bootstrap.min.css",
+  "src/styles.css"
+]
+```
+---
+3. Import the NgbModule:-
+In app.module.ts , import the NgbModule.
+
+
+``` js
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+
+@NgModule({
+  imports: [NgbModule],
+  // ...
+})
+
+```
+
+-------
+
+
 # MyApp
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.0.8.
