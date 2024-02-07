@@ -1,10 +1,10 @@
 package com.example.CustomerService.controller;
 
-import com.example.CustomerService.entity.ContactDetails;
 import com.example.CustomerService.exception.CustomerNotFoundException;
 import com.example.CustomerService.exception.PasswordNotFoundEcxeption;
 import com.example.CustomerService.model.Credentials;
 import com.example.CustomerService.model.CustomerContact;
+import com.example.CustomerService.model.ResponseDTO;
 import com.example.CustomerService.services.ContactDetailsService;
 import com.example.CustomerService.services.CustomerLoginService;
 import jakarta.validation.Valid;
@@ -19,6 +19,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 @Slf4j
@@ -29,19 +30,15 @@ public class CustomerController {
     CustomerLoginService loginService;
     ContactDetailsService contactDetailsService;
 
-    CustomerController(CustomerLoginService service,ContactDetailsService contactService){
+    ResponseDTO response=new ResponseDTO();
+    CustomerController(CustomerLoginService service, ContactDetailsService contactService) {
 
-        this.loginService=service;
-        this.contactDetailsService=contactService;
+        this.loginService = service;
+        this.contactDetailsService = contactService;
     }
 
 
-    @Operation(summary = "Display customer details", description = "Get customer details by name : ")
-    @GetMapping("/loginName/{name}")
-    public Credentials showUserName(@PathVariable("name") String name) throws CustomerNotFoundException {
-        return this.loginService.getUserDetails_name(name);
 
-    }
 
     @Operation(summary = "Login customer", description = "Authenticate customer with provided credentials")
     @ApiResponses(value = {
@@ -49,10 +46,17 @@ public class CustomerController {
             @ApiResponse(responseCode = "400", description = "Not found! Try Again")
     })
     @PostMapping("/login")
-    public ResponseEntity login(@Valid @RequestBody Credentials credential){
-       this.loginService.login(credential);
-        return new ResponseEntity<String>("user created successfully", HttpStatus.ACCEPTED);
+    public ResponseEntity login(@Valid @RequestBody Credentials credential) throws CustomerNotFoundException,ExecutionException, InterruptedException  {
+        log.info("Thread info: {}",Thread.currentThread());
+
+        CompletableFuture<Void> loginFuture = loginService.login(credential);
+        loginFuture.get();
+        ResponseDTO response=new ResponseDTO();
+        response.setMessage("user logged in successfully");
+        return new ResponseEntity<>(response,HttpStatus.CREATED);
+
     }
+
 
     @Operation(summary = "Customer Contact details", description = "Adding customer contact details and username")
     @ApiResponses(value = {
@@ -60,35 +64,38 @@ public class CustomerController {
             @ApiResponse(responseCode = "400", description = "Not found! Try Again")
     })
     @PostMapping("/addContact/{name}")
-    public ResponseEntity addContact(@PathVariable("name") String name, @Valid @RequestBody CustomerContact customerContact)throws CustomerNotFoundException {
+    public ResponseEntity<?> addContact(@PathVariable("name") String name, @Valid @RequestBody CustomerContact customerContact)throws CustomerNotFoundException, ExecutionException, InterruptedException  {
         if(!customerContact.getUsername().equals(name)){
             log.info("enter valid credentials");
             throw new CustomerNotFoundException("given name does not match with username");
         }
-
-        this.contactDetailsService.addContact(name,customerContact);
-        return new ResponseEntity<String>("contact details added successfully",HttpStatus.ACCEPTED);
+        CompletableFuture<Void> addContactFuture = contactDetailsService.addContact(name, customerContact);
+        addContactFuture.get();
+        response.setMessage("customer's contact detail added");
+        return new ResponseEntity<>(response,HttpStatus.CREATED);
+//        this.contactDetailsService.addContact(name,customerContact);
+//        return new ResponseEntity<String>("contact details added successfully",HttpStatus.ACCEPTED);
     }
 
+    @Operation(summary = "Display customer details", description = "Get customer details by name : ")
+    @GetMapping("/loginName/{name}")
+    public CompletableFuture<Credentials> showUserName(@PathVariable("name") String name) throws CustomerNotFoundException {
+        return this.loginService.getUserDetails_name(name);
+
+    }
 
     @Operation(summary = "Display customer details", description = "Get customer details by password: ")
     @GetMapping("/loginPassword/{password}")
-    public Credentials showUserPassword(@PathVariable("password") String password) throws PasswordNotFoundEcxeption {
-
+    public CompletableFuture<Credentials> showUserPassword(@PathVariable("password") String password) throws PasswordNotFoundEcxeption {
         return this.loginService.getUserDetails_password(password);
 
     }
 
     @Operation(summary = "Display customer contact details", description = "Get customer contact details by username: ")
     @GetMapping("/getContact/{name}")
-    public List<CustomerContact> showContactDetails(@PathVariable("name") String name) throws CustomerNotFoundException{
-
+    public CompletableFuture<List<CustomerContact>> showContactDetails(@PathVariable("name") String name) throws CustomerNotFoundException {
         return this.contactDetailsService.getUserContact(name);
-
     }
-
-
-
 
 
 }
