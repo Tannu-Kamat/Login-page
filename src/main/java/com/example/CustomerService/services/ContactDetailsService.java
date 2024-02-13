@@ -14,6 +14,7 @@ import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
@@ -30,25 +31,27 @@ public class ContactDetailsService {
         this.customerContactValidator=customerContactValidator;
     }
 
+
     @Async("MultiRequestAsyncThread")
-    public  CompletableFuture<Void> addContact(String name, CustomerContact customerContact) throws CustomerNotFoundException{
-        CustomerCredentials findCustomer=customerCredetialsRepository.findByUsername(customerContact.getUsername());
+    public CompletableFuture<Void> addContact(String name, CustomerContact customerContact) {
+        Optional<CustomerCredentials> findCustomer = Optional.ofNullable(customerCredetialsRepository.findByUsername(customerContact.getUsername()));
 
-        if(findCustomer==null){
-            throw new CustomerNotFoundException(customerContact.getUsername()+" not found in database");
+        if (findCustomer.isEmpty()) {
+            throw new CustomerNotFoundException(customerContact.getUsername() + " not found in database");
         }
-        return CompletableFuture.supplyAsync(()->{
-            Errors errors= new BeanPropertyBindingResult(customerContact,"customer contact");
-            customerContactValidator.validate(customerContact,errors);
 
-            ContactDetails contactDetails=ContactDetails.builder().username(customerContact.getUsername())
+        return CompletableFuture.supplyAsync(() -> {
+            Errors errors = new BeanPropertyBindingResult(customerContact, "customer contact");
+            customerContactValidator.validate(customerContact, errors);
+
+            ContactDetails contactDetails = ContactDetails.builder().username(customerContact.getUsername())
                     .phoneNumber(customerContact.getPhoneNumber()).build();
             contactDetailsRepository.save(contactDetails);
-            log.info("contact added for user : {}",customerContact.getUsername());
+            log.info("contact added for user : {}", customerContact.getUsername());
             return null;
         });
-
     }
+
 
     @Async("MultiRequestAsyncThread")
     public CompletableFuture<List<CustomerContact>> getUserContact(String name) throws CustomerNotFoundException{

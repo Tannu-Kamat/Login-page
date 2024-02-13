@@ -31,9 +31,7 @@ public class CustomerLoginService {
 
         return CompletableFuture.supplyAsync(()->{
             Errors errors=new BeanPropertyBindingResult(credentials,"credentials");
-//            if(errors.hasErrors()){
-//                throw new DataIntegrityViolationException("user exist in database");
-//            }
+
             credentialsvalidator.validate(credentials,errors);
             CustomerCredentials userCredentials= CustomerCredentials.builder().username(credentials.getUsername())
                .password(credentials.getPassword()).build();
@@ -81,12 +79,10 @@ return null;
                Credentials credentials= Credentials.builder().username(userCredentials.getUsername())
                        .password(userCredentials.getPassword()).build();
                future.complete(credentials);
-//               return CompletableFuture.completedFuture(credentials);
 
            }
            else{
                log.info("customer not found in database with given password {}",password);
-//               throw new PasswordNotFoundEcxeption("customer not found in database with given password");
                 future.completeExceptionally(new PasswordNotFoundEcxeption("customer not found in database with given password"));
            }
        });

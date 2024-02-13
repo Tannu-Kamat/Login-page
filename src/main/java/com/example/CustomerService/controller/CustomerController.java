@@ -43,7 +43,8 @@ public class CustomerController {
     @Operation(summary = "Login customer", description = "Authenticate customer with provided credentials")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "202", description = "customer logged in successfully"),
-            @ApiResponse(responseCode = "400", description = "Not found! Try Again")
+            @ApiResponse(responseCode = "400", description = "Not found! Try Again"),
+            @ApiResponse(responseCode = "401", description = "enter valid credentials")
     })
     @PostMapping("/login")
     public ResponseEntity login(@Valid @RequestBody Credentials credential) throws CustomerNotFoundException,ExecutionException, InterruptedException  {
@@ -60,8 +61,9 @@ public class CustomerController {
 
     @Operation(summary = "Customer Contact details", description = "Adding customer contact details and username")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "202", description = "customer logged in successfully"),
-            @ApiResponse(responseCode = "400", description = "Not found! Try Again")
+            @ApiResponse(responseCode = "202", description = "customer contact added successfully"),
+            @ApiResponse(responseCode = "400", description = "Not found! Try Again"),
+            @ApiResponse(responseCode = "401", description = "enter valid credentials")
     })
     @PostMapping("/addContact/{name}")
     public ResponseEntity<?> addContact(@PathVariable("name") String name, @Valid @RequestBody CustomerContact customerContact)throws CustomerNotFoundException, ExecutionException, InterruptedException  {
@@ -73,11 +75,14 @@ public class CustomerController {
         addContactFuture.get();
         response.setMessage("customer's contact detail added");
         return new ResponseEntity<>(response,HttpStatus.CREATED);
-//        this.contactDetailsService.addContact(name,customerContact);
-//        return new ResponseEntity<String>("contact details added successfully",HttpStatus.ACCEPTED);
     }
 
     @Operation(summary = "Display customer details", description = "Get customer details by name : ")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "402", description = "user doesn't exist"),
+            @ApiResponse(responseCode = "200", description = "user fetched successfully"),
+
+    })
     @GetMapping("/loginName/{name}")
     public CompletableFuture<Credentials> showUserName(@PathVariable("name") String name) throws CustomerNotFoundException {
         return this.loginService.getUserDetails_name(name);
@@ -85,6 +90,11 @@ public class CustomerController {
     }
 
     @Operation(summary = "Display customer details", description = "Get customer details by password: ")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "402", description = "user doesn't exist"),
+            @ApiResponse(responseCode = "200", description = "user fetched successfully"),
+
+    })
     @GetMapping("/loginPassword/{password}")
     public CompletableFuture<Credentials> showUserPassword(@PathVariable("password") String password) throws PasswordNotFoundEcxeption {
         return this.loginService.getUserDetails_password(password);
@@ -92,6 +102,11 @@ public class CustomerController {
     }
 
     @Operation(summary = "Display customer contact details", description = "Get customer contact details by username: ")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "402", description = "user doesn't exist"),
+            @ApiResponse(responseCode = "200", description = "user fetched successfully"),
+
+    })
     @GetMapping("/getContact/{name}")
     public CompletableFuture<List<CustomerContact>> showContactDetails(@PathVariable("name") String name) throws CustomerNotFoundException {
         return this.contactDetailsService.getUserContact(name);

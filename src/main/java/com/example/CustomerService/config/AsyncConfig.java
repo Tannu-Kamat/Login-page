@@ -16,14 +16,18 @@ public class AsyncConfig {
     public Executor getThreadPoolExecutor(){
         ThreadPoolTaskExecutor executor=new ThreadPoolTaskExecutor(){
 
-            @Override
-            public void execute(Runnable task){
-                log.info("task submitted {}",task.toString());
-                super.execute(task);
-            }
+
+@Override
+public void execute(Runnable task) {
+    long threadId = Thread.currentThread().getId();
+    log.info("Task submitted: {} Thread ID: {}", task.toString(), threadId);
+    super.execute(task);
+}
+
 
             protected void afterExecute(Runnable r, Throwable t){
-                log.info("task completed {}",r.toString());
+                long threadId = Thread.currentThread().getId();
+                log.info("task completed {} Thread ID: {}",r.toString(),threadId);
                 super.afterExecute(r,t);
             }
         };
