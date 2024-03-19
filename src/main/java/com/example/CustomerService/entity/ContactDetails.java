@@ -9,7 +9,8 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 @Entity
-@AllArgsConstructor@NoArgsConstructor
+@AllArgsConstructor
+@NoArgsConstructor
 public class ContactDetails {
 
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -20,5 +21,6 @@ public class ContactDetails {
 
     @Column(unique = true)
     private String phoneNumber;
+
 
 }

@@ -6,6 +6,7 @@ import com.example.CustomerService.exception.CustomerNotFoundException;
 import com.example.CustomerService.model.CustomerContact;
 import com.example.CustomerService.repository.ContactDetailsRepository;
 import com.example.CustomerService.repository.CustomerCredetialsRepository;
+import java.util.Date;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.scheduling.annotation.Async;
@@ -76,3 +77,4 @@ public class ContactDetailsService {
     }
 
 }
+

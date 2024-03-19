@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 @Data
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(force = true)
 public class Credentials {
 
   @NotEmpty(message = " username can not be empty")
@@ -24,6 +24,7 @@ public class Credentials {
   @NotEmpty(message = " password can not be empty")
   @Size(min=4, message = " password should be minimum of 4 characters")
   private String password;
+
 
 
 

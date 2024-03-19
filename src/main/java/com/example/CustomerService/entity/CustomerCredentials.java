@@ -15,9 +15,9 @@ import java.util.Set;
 
 @Data
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@AllArgsConstructor
 @Table(uniqueConstraints={@UniqueConstraint(columnNames={"username"})})
 public class CustomerCredentials {
 
@@ -32,6 +32,8 @@ public class CustomerCredentials {
     private String password;
 
     @OneToMany(targetEntity = ContactDetails.class, cascade = CascadeType.ALL)
-    @JoinColumn(name = "id", referencedColumnName = "id")
+    @JoinColumn(name = "username", referencedColumnName = "username")
     private List<ContactDetails> CustomerContactDetails;
+
+
 }
