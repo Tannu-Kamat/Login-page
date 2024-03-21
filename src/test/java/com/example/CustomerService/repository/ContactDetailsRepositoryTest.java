@@ -25,11 +25,13 @@ class ContactDetailsRepositoryTest {
   @Autowired
   private ContactDetailsRepository testContactDetailsRepository;
 
-
   @AfterEach
   void tearDown() {
     testContactDetailsRepository.deleteAll();
   }
+
+
+
   @Test
   void findByUsername() {
     String name="alpha";
@@ -43,7 +45,10 @@ class ContactDetailsRepositoryTest {
     expectedContactDetailsList.add(expectedContactDetails2);
 
     List<ContactDetails> resultContactDetailsList = testContactDetailsRepository.findByUsername(name);
+
     assertThat(resultContactDetailsList).isEqualTo(expectedContactDetailsList);
+
+
 
   }
 }

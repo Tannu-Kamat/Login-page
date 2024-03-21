@@ -26,69 +26,48 @@ public class CustomerLoginService {
         this.credentialsvalidator= credentialsvalidator;
     }
 
-    @Async("MultiRequestAsyncThread")
-    public CompletableFuture<Void> login(Credentials credentials){
 
-        return CompletableFuture.supplyAsync(()->{
-            Errors errors=new BeanPropertyBindingResult(credentials,"credentials");
 
-            credentialsvalidator.validate(credentials,errors);
-            CustomerCredentials userCredentials= CustomerCredentials.builder().username(credentials.getUsername())
-               .password(credentials.getPassword()).build();
+    public void login(Credentials credentials){
 
+        CustomerCredentials userCredentials= CustomerCredentials.builder().username(credentials.getUsername())
+            .password(credentials.getPassword()).build();
         credetialsRepository.save(userCredentials);
+        log.info("user logged in is {}",credentials.getUsername());
+    }
 
-                log.info("user logged in is {}",credentials.getUsername());
 
-return null;
-        });
+    public Credentials getUserDetails_name(String name) throws CustomerNotFoundException {
+        CustomerCredentials userCredentials = credetialsRepository.findByUsername(name);
+
+        if(userCredentials!=null){
+            log.info("user logged in is : {}",userCredentials.getUsername());
+            return Credentials.builder().username(userCredentials.getUsername())
+                .password(userCredentials.getPassword()).build();
+        }
+        else{
+            log.info("customer not found in database with given name {}",name);
+            throw new CustomerNotFoundException(name+" not found in database");
+        }
+
+
 
     }
 
-    @Async("MultiRequestAsyncThread")
-    public  CompletableFuture<Credentials> getUserDetails_name(String name) throws CustomerNotFoundException{
-        CompletableFuture<Credentials> future= new CompletableFuture<>();
-        CompletableFuture.runAsync(()-> {
 
-            CustomerCredentials userCredentials = credetialsRepository.findByUsername(name);
-            if (userCredentials != null) {
-                log.info("user logged in is : {}", userCredentials.getUsername());
-                Credentials credentials = Credentials.builder().username(userCredentials.getUsername())
-                        .password(userCredentials.getPassword()).build();
-                future.complete(credentials);
+    public Credentials getUserDetails_password(String password) throws PasswordNotFoundEcxeption {
+        CustomerCredentials userCredentials = credetialsRepository.findByPassword(password);
 
-            } else {
-                log.info("customer not found in database with given name {}", name);
-                future.completeExceptionally(new CustomerNotFoundException("customer not found in database with given name"));
+        if (userCredentials != null) {
+            log.info("user logged in is : {} with given password", userCredentials.getUsername());
+            return Credentials.builder().username(userCredentials.getUsername())
+                .password(userCredentials.getPassword()).build();
+        } else {
+            log.info("customer not found in database with given password {}", password);
+            throw new PasswordNotFoundEcxeption(
+                "customer not found in database with given password");
 
-            }
-
-        });
-        return future;
-    }
-
-    @Async("MultiRequestAsyncThread")
-    public CompletableFuture<Credentials> getUserDetails_password(String password) throws PasswordNotFoundEcxeption {
-       CompletableFuture<Credentials> future= new CompletableFuture<>();
-       CompletableFuture.runAsync(()->{
-           CustomerCredentials userCredentials = credetialsRepository.findByPassword(password);
-
-           if(userCredentials!=null){
-               log.info("user logged in is : {} with given password",userCredentials.getUsername());
-
-               Credentials credentials= Credentials.builder().username(userCredentials.getUsername())
-                       .password(userCredentials.getPassword()).build();
-               future.complete(credentials);
-
-           }
-           else{
-               log.info("customer not found in database with given password {}",password);
-                future.completeExceptionally(new PasswordNotFoundEcxeption("customer not found in database with given password"));
-           }
-       });
-
-return future;
-
+        }
     }
 
 }
